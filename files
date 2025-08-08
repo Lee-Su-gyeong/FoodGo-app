@@ -1,0 +1,261 @@
+// app/layout.tsx
+import type { Metadata } from "next"
+import "./globals.css"
+import GNB from "@/components/gnb"
+import { cn } from "@/lib/utils"
+
+export const metadata: Metadata = {
+  title: "오늘 뭐 먹지?",
+  description: "상큼한 메뉴 추천 — 룰렛 & 메뉴 월드컵",
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="ko">
+      <body className={cn("min-h-screen bg-[#FFF9CC] text-gray-900 antialiased")}>
+        <GNB />
+        {children}
+      </body>
+    </html>
+  )
+}
+
+// components/gnb.tsx
+"use client"
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
+import { Utensils } from 'lucide-react'
+
+export default function GNB() {
+  const pathname = usePathname()
+  const isActive = (href: string) => pathname === href
+
+  return (
+    <header className="sticky top-0 z-40 w-full border-b bg-[#FFF7CC]/90 backdrop-blur supports-[backdrop-filter]:bg-[#FFF7CC]/70">
+      <div className="mx-auto max-w-md px-4">
+        <div className="flex items-center gap-3 py-3">
+          <div className="grid place-items-center w-9 h-9 rounded-full border bg-white shadow-sm">
+            <Utensils className="w-5 h-5 text-rose-500" />
+          </div>
+          <div className="font-extrabold text-lg">오늘 뭐 먹지?</div>
+        </div>
+        <nav className="pb-2">
+          <ul className="grid grid-cols-2 gap-2">
+            <li>
+              <Link
+                href="/roulette"
+                aria-current={isActive("/roulette") ? "page" : undefined}
+                className={cn(
+                  "block text-center rounded-full px-4 py-2 text-base font-bold transition-colors",
+                  isActive("/roulette")
+                    ? "bg-rose-500 text-white"
+                    : "bg-rose-50 text-rose-600 hover:bg-rose-100"
+                )}
+              >
+                룰렛
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/worldcup"
+                aria-current={isActive("/worldcup") ? "page" : undefined}
+                className={cn(
+                  "block text-center rounded-full px-4 py-2 text-base font-bold transition-colors",
+                  isActive("/worldcup")
+                    ? "bg-amber-500 text-white"
+                    : "bg-amber-50 text-amber-700 hover:bg-amber-100"
+                )}
+              >
+                메뉴 월드컵
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+  )
+}
+
+// components/bear-avatar.tsx
+"use client"
+
+import { cn } from "@/lib/utils"
+
+type Props = {
+  says?: string
+  className?: string
+}
+
+export default function BearAvatar({ says = "상큼하게 추천해 줄게요!", className }: Props) {
+  return (
+    <div className={cn("flex items-center gap-3", className)}>
+      <div className="relative">
+        <div className="rounded-2xl bg-pink-100 text-pink-900 px-4 py-2 text-base font-bold shadow">
+          {says}
+        </div>
+        <div
+          aria-hidden
+          className="absolute -left-2 top-1/2 -translate-y-1/2 w-0 h-0"
+          style={{ borderTop: "8px solid transparent", borderBottom: "8px solid transparent", borderRight: "12px solid rgb(252 231 243)" }}
+        />
+      </div>
+    </div>
+  )
+}
+
+// components/roulette-wheel.tsx
+"use client"
+
+import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import { shuffle } from "@/lib/utils"
+import { Menu } from "@/types/menu"
+import { useBearStore } from "@/store/useBearStore"
+import { useMenuStore } from "@/store/useMenuStore"
+import { useToast } from "@/components/ui/use-toast"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { X } from 'lucide-react'
+
+type Props = {
+  menus: Menu[]
+}
+
+export default function RouletteWheel({ menus }: Props) {
+  const router = useRouter()
+  const { toast } = useToast()
+  const [selectedMenu, setSelectedMenu] = useState<Menu | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [customMenuName, setCustomMenuName] = useState("")
+  const { say } = useBearStore()
+  const { addCustomMenu } = useMenuStore()
+
+  useEffect(() => {
+    if (menus.length === 0) {
+      toast({
+        title: "메뉴가 없습니다.",
+        description: "메뉴를 추가해주세요.",
+      })
+    }
+  }, [menus, toast])
+
+  const handleSpin = () => {
+    if (menus.length === 0) return
+
+    const shuffledMenus = shuffle(menus)
+    const selected = shuffledMenus[0]
+    setSelectedMenu(selected)
+    setIsDialogOpen(true)
+  }
+
+  const handleConfirm = () => {
+    if (customMenuName.trim() === "") {
+      toast({
+        title: "메뉴 이름을 입력해주세요.",
+        description: "메뉴 이름을 입력하지 않으면 추가되지 않습니다.",
+      })
+      return
+    }
+
+    addCustomMenu({
+      id: Date.now().toString(),
+      name: customMenuName,
+      imageUrl: "",
+    })
+
+    toast({
+      title: "메뉴 추가 완료!",
+      description: `${customMenuName}이(가) 메뉴 목록에 추가되었습니다.`,
+    })
+
+    setCustomMenuName("")
+    setIsDialogOpen(false)
+    router.refresh()
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="absolute inset-0 grid place-items-center pointer-events-none">
+        <div className="w-16 h-16 rounded-full bg-white border-2 border-rose-200 shadow" />
+      </div>
+      <div className="relative w-96 h-96">
+        {/* 나머지 로직과 스타일은 유지 */}
+      </div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogTrigger asChild>
+          <Button className="mt-6" onClick={handleSpin}>
+            룰렛 돌리기
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>메뉴 선택 완료!</DialogTitle>
+            <DialogDescription>
+              {selectedMenu ? selectedMenu.name : "선택된 메뉴가 없습니다."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-sm font-medium">
+                메뉴 이름
+              </Label>
+              <Input
+                id="name"
+                value={customMenuName}
+                onChange={(e) => setCustomMenuName(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <Separator />
+          <div className="flex justify-end space-x-2">
+            <DialogTrigger asChild>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                취소
+              </Button>
+            </DialogTrigger>
+            <Button onClick={handleConfirm}>추가</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+
+// app/roulette/page.tsx
+import BearAvatar from "@/components/bear-avatar"
+import RouletteWheel from "@/components/roulette-wheel"
+import { useMenuStore } from "@/store/useMenuStore"
+
+export default function RoulettePage() {
+  const { menus } = useMenuStore()
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <BearAvatar says="룰렛으로 골라볼까?" className="mb-3" />
+      <RouletteWheel menus={menus} />
+    </div>
+  )
+}
+
+// app/worldcup/page.tsx
+import BearAvatar from "@/components/bear-avatar"
+import WorldCup from "@/components/worldcup"
+import { useMenuStore } from "@/store/useMenuStore"
+
+export default function WorldCupPage() {
+  const { menus } = useMenuStore()
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <BearAvatar says="토너먼트로 정해보자!" className="mb-3" />
+      <WorldCup menus={menus} />
+    </div>
+  )
+}
