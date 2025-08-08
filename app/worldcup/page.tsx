@@ -21,12 +21,9 @@ export default function WorldCupPage() {
   useEffect(() => {
     if (winner && !alertShownRef.current) {
       alertShownRef.current = true
-      try {
-        window.alert(`우승 메뉴가 나왔어요! "${winner.name}"`)
-      } catch {}
       const t = window.setTimeout(() => {
         resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-      }, 2000)
+      }, 1000)
       return () => window.clearTimeout(t)
     }
   }, [winner])

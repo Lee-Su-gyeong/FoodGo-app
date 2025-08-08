@@ -21,14 +21,10 @@ export default function RoulettePage() {
   useEffect(() => {
     if (result && !alertShownRef.current) {
       alertShownRef.current = true
-      // 1) Show alert
-      try {
-        window.alert(`결과가 나왔어요! "${result.name}"`)
-      } catch {}
-      // 2) Scroll to result card after 2s
+      // Scroll to result card after 1s
       const t = window.setTimeout(() => {
         resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-      }, 2000)
+      }, 1000)
       return () => window.clearTimeout(t)
     }
   }, [result])
