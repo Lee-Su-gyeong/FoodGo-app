@@ -4,9 +4,6 @@ import { useMemo, useState } from "react"
 import BearAvatar from "@/components/bear-avatar"
 import RouletteWheel from "@/components/roulette-wheel"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
 import { getMenuPool, type MealTime, type MenuItem } from "@/lib/menus"
 import { Undo2 } from 'lucide-react'
 
@@ -21,28 +18,24 @@ export default function RoulettePage() {
     <main className="mx-auto max-w-md p-4">
       <BearAvatar says="룰렛으로 골라볼까? 🐱🎡" className="mb-3" />
 
-      <Card className="mb-4 bg-[#FFF2B3] border-yellow-200">
-        <CardHeader className="py-3">
-          <CardTitle className="text-base">식사 시간 선택</CardTitle>
-          <CardDescription>점심 또는 저녁</CardDescription>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <RadioGroup
-            value={mealTime}
-            onValueChange={(v: MealTime) => setMealTime(v)}
-            className="grid grid-cols-2 gap-3"
+      {/* Segmented buttons: 점심 / 저녁 */}
+      <div className="mb-4">
+        <div className="text-sm text-muted-foreground mb-2">식사 시간</div>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            className={mealTime === "lunch" ? "bg-rose-500 text-white" : "bg-rose-50 text-rose-700 hover:bg-rose-100"}
+            onClick={() => setMealTime("lunch")}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="lunch" value="lunch" />
-              <Label htmlFor="lunch" className="text-base">점심</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="dinner" value="dinner" />
-              <Label htmlFor="dinner" className="text-base">저녁</Label>
-            </div>
-          </RadioGroup>
-        </CardContent>
-      </Card>
+            점심
+          </Button>
+          <Button
+            className={mealTime === "dinner" ? "bg-amber-500 text-white" : "bg-amber-50 text-amber-700 hover:bg-amber-100"}
+            onClick={() => setMealTime("dinner")}
+          >
+            저녁
+          </Button>
+        </div>
+      </div>
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
@@ -73,7 +66,11 @@ export default function RoulettePage() {
                 <Button className="rounded-full" onClick={() => setResult(null)}>
                   다시 돌리기
                 </Button>
-                <Button variant="secondary" className="rounded-full" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+                <Button
+                  variant="secondary"
+                  className="rounded-full"
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                >
                   위로
                 </Button>
               </div>

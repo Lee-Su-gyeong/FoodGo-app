@@ -12,11 +12,15 @@ export default function GNB() {
     <header className="sticky top-0 z-40 w-full border-b bg-[#FFF7CC]/90 backdrop-blur supports-[backdrop-filter]:bg-[#FFF7CC]/70">
       <div className="mx-auto max-w-md px-4">
         <div className="flex items-center gap-3 py-3">
-          <img
-            src="/images/cat-character.png"
-            alt="고양이 캐릭터"
-            className="w-9 h-9 rounded-full border bg-white object-contain shadow-sm"
-          />
+          {/* New cat face (cropped) */}
+          <div className="w-9 h-9 rounded-full border bg-white shadow-sm overflow-hidden">
+            <img
+              src="/images/cat-new.png"
+              alt="고양이 얼굴"
+              className="w-full h-full object-cover object-center scale-[1.15]"
+              aria-hidden="true"
+            />
+          </div>
           <div className="font-extrabold text-lg">오늘 뭐 먹지?</div>
         </div>
         <nav className="pb-2">

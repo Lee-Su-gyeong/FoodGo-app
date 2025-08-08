@@ -47,7 +47,6 @@ export default function RouletteWheel({
   const slices = useMemo(() => (items.length ? items : []), [items])
   const anglePer = slices.length ? 360 / slices.length : 360
 
-  // fresh pastel palette
   const colors = useMemo(
     () => ["#fff3b0", "#ffd3e2", "#ffdca8", "#c8f7dc", "#d7e8ff", "#f5d0fe", "#fbcfe8", "#fce1d2"],
     []
@@ -79,19 +78,15 @@ export default function RouletteWheel({
     setSpinning(true)
     setHasSpun(true)
 
-    // pointer at 0deg; align middle of target slice to top
     const targetAngle = 360 * extraTurns + (360 - (target * anglePer + anglePer / 2))
     setRotation((prev) => prev + targetAngle)
 
-    // effects
     try {
       spinAudioRef.current?.play().catch(() => {})
     } catch {}
-    if ("vibrate" in navigator) {
-      try {
-        navigator.vibrate?.(40)
-      } catch {}
-    }
+    try {
+      navigator.vibrate?.(40)
+    } catch {}
   }
 
   useEffect(() => {
@@ -109,11 +104,9 @@ export default function RouletteWheel({
       try {
         winAudioRef.current?.play().catch(() => {})
       } catch {}
-      if ("vibrate" in navigator) {
-        try {
-          navigator.vibrate?.([60, 40, 60])
-        } catch {}
-      }
+      try {
+        navigator.vibrate?.([60, 40, 60])
+      } catch {}
       if (pickedIndex != null && slices[pickedIndex]) {
         onPick(slices[pickedIndex])
       }
@@ -132,7 +125,7 @@ export default function RouletteWheel({
           style={{
             borderLeft: "12px solid transparent",
             borderRight: "12px solid transparent",
-            borderBottom: "20px solid rgb(244 114 182)", // rose-500
+            borderBottom: "20px solid rgb(244 114 182)",
           }}
         />
         {/* Wheel */}
@@ -147,13 +140,13 @@ export default function RouletteWheel({
           role="img"
           aria-label="메뉴 룰렛"
         >
-          {/* Center hub with cat paw */}
+          {/* Center hub with provided paw image */}
           <div className="absolute inset-0 grid place-items-center pointer-events-none">
             <div className="w-16 h-16 rounded-full bg-white border-2 border-rose-200 shadow overflow-hidden grid place-items-center">
               <img
-                src="/images/paw.png"
+                src="/images/paw-print.png"
                 alt=""
-                className="w-12 h-12 object-contain opacity-80"
+                className="w-10 h-10 object-contain"
               />
             </div>
           </div>
