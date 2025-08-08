@@ -1,6 +1,14 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@font-face {
+  font-family: "NanumSquare";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/NanumSquareB.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -119,5 +127,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "NanumSquare", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "Nanum Gothic", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
   }
 }
