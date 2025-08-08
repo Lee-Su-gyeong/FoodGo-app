@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
 import GNB from "@/components/gnb"
-import PawBackground from "@/components/paw-background"
 import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
@@ -13,10 +12,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className={cn("min-h-screen bg-[#FFF9CC] text-gray-900 antialiased")}>
+      <body className={cn("min-h-screen text-gray-900 antialiased app-gingham")}>
         <GNB />
-        <PawBackground />
-        {children}
+        <div className="mx-auto max-w-md p-3 md:p-4">
+          <div className="bg-white/95 border rounded-3xl shadow-sm backdrop-blur-sm">
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   )

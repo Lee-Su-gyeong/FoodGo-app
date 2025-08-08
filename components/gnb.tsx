@@ -9,14 +9,14 @@ export default function GNB() {
   const isActive = (href: string) => pathname === href
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-[#FFF7CC]/90 backdrop-blur supports-[backdrop-filter]:bg-[#FFF7CC]/70">
+    <header className="sticky top-0 z-40 w-full border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="mx-auto max-w-md px-4">
         <div className="flex items-center gap-3 py-3">
-          {/* New cat face (cropped) */}
+          {/* Sheep face (cropped) */}
           <div className="w-9 h-9 rounded-full border bg-white shadow-sm overflow-hidden">
             <img
-              src="/images/cat-new.png"
-              alt="고양이 얼굴"
+              src="/images/mascot-sheep.png"
+              alt="양 얼굴"
               className="w-full h-full object-cover object-center scale-[1.15]"
               aria-hidden="true"
             />
@@ -32,8 +32,8 @@ export default function GNB() {
                 className={cn(
                   "block text-center rounded-full px-4 py-2 text-base font-bold transition-colors",
                   isActive("/roulette")
-                    ? "bg-rose-500 text-white"
-                    : "bg-rose-50 text-rose-600 hover:bg-rose-100"
+                    ? "bg-sky-500 text-white"
+                    : "bg-sky-50 text-sky-700 hover:bg-sky-100"
                 )}
               >
                 룰렛
@@ -46,8 +46,8 @@ export default function GNB() {
                 className={cn(
                   "block text-center rounded-full px-4 py-2 text-base font-bold transition-colors",
                   isActive("/worldcup")
-                    ? "bg-amber-500 text-white"
-                    : "bg-amber-50 text-amber-700 hover:bg-amber-100"
+                    ? "bg-blue-500 text-white"
+                    : "bg-blue-50 text-blue-700 hover:bg-blue-100"
                 )}
               >
                 메뉴 월드컵

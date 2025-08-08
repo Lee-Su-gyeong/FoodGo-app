@@ -47,13 +47,14 @@ export default function RouletteWheel({
   const slices = useMemo(() => (items.length ? items : []), [items])
   const anglePer = slices.length ? 360 / slices.length : 360
 
+  // Sky/blue pastel palette for wedges
   const colors = useMemo(
-    () => ["#fff3b0", "#ffd3e2", "#ffdca8", "#c8f7dc", "#d7e8ff", "#f5d0fe", "#fbcfe8", "#fce1d2"],
+    () => ["#E0F2FE", "#DBEAFE", "#CFFAFE", "#BFDBFE", "#BAE6FD", "#C7D2FE", "#93C5FD", "#A5F3FC"],
     []
   )
 
   const gradient = useMemo(() => {
-    if (!slices.length) return "conic-gradient(#f1f5f9, #f8fafc)"
+    if (!slices.length) return "conic-gradient(#e5f0ff, #eff6ff)"
     const stops: string[] = []
     for (let i = 0; i < slices.length; i++) {
       const start = (i / slices.length) * 360
@@ -78,6 +79,7 @@ export default function RouletteWheel({
     setSpinning(true)
     setHasSpun(true)
 
+    // Align middle of target slice to pointer (top)
     const targetAngle = 360 * extraTurns + (360 - (target * anglePer + anglePer / 2))
     setRotation((prev) => prev + targetAngle)
 
@@ -118,20 +120,20 @@ export default function RouletteWheel({
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
-        {/* Pointer */}
+        {/* Pointer in sky-500 */}
         <div
           aria-hidden
           className="absolute left-1/2 -translate-x-1/2 -top-3 z-10 w-0 h-0"
           style={{
             borderLeft: "12px solid transparent",
             borderRight: "12px solid transparent",
-            borderBottom: "20px solid rgb(244 114 182)",
+            borderBottom: "20px solid rgb(14 165 233)", // sky-500
           }}
         />
-        {/* Wheel */}
+        {/* Wheel with blue border */}
         <div
           ref={wheelRef}
-          className={cn("relative rounded-full border-2 border-rose-200 shadow-xl w-72 h-72 md:w-80 md:h-80")}
+          className={cn("relative rounded-full border-2 border-sky-200 shadow-xl w-72 h-72 md:w-80 md:h-80")}
           style={{
             transform: `rotate(${rotation}deg)`,
             backgroundImage: gradient,
@@ -140,13 +142,13 @@ export default function RouletteWheel({
           role="img"
           aria-label="메뉴 룰렛"
         >
-          {/* Center hub with provided paw image */}
+          {/* Center hub with the provided image (replaces paw) */}
           <div className="absolute inset-0 grid place-items-center pointer-events-none">
-            <div className="w-16 h-16 rounded-full bg-white border-2 border-rose-200 shadow overflow-hidden grid place-items-center">
+            <div className="w-16 h-16 rounded-full bg-white border-2 border-sky-200 shadow overflow-hidden grid place-items-center">
               <img
-                src="/images/paw-print.png"
+                src="/images/center-gromit.png"
                 alt=""
-                className="w-10 h-10 object-contain"
+                className="w-full h-full object-cover object-center"
               />
             </div>
           </div>
@@ -156,7 +158,7 @@ export default function RouletteWheel({
       <Button
         onClick={spin}
         size="lg"
-        className="rounded-full px-6 py-6 text-lg bg-rose-500 hover:bg-rose-600"
+        className="rounded-full px-6 py-6 text-lg bg-sky-500 hover:bg-sky-600"
         disabled={spinning || !slices.length}
       >
         <RefreshCcw className={cn("h-5 w-5 mr-2", spinning ? "animate-spin" : "")} />
@@ -164,7 +166,7 @@ export default function RouletteWheel({
       </Button>
 
       {!spinning && pickedIndex != null ? (
-        <div className="flex items-center gap-2 text-rose-600">
+        <div className="flex items-center gap-2 text-sky-700">
           <PartyPopper className="h-5 w-5" />
           <span className="font-semibold">결과 확인 아래에서!</span>
         </div>

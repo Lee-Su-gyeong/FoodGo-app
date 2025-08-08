@@ -23,13 +23,13 @@ export default function WorldCupPage() {
         <div className="text-sm text-muted-foreground mb-2">식사 시간</div>
         <div className="grid grid-cols-2 gap-2">
           <Button
-            className={mealTime === "lunch" ? "bg-rose-500 text-white" : "bg-rose-50 text-rose-700 hover:bg-rose-100"}
+            className={mealTime === "lunch" ? "bg-sky-500 text-white" : "bg-sky-50 text-sky-700 hover:bg-sky-100"}
             onClick={() => setMealTime("lunch")}
           >
             점심
           </Button>
           <Button
-            className={mealTime === "dinner" ? "bg-amber-500 text-white" : "bg-amber-50 text-amber-700 hover:bg-amber-100"}
+            className={mealTime === "dinner" ? "bg-blue-500 text-white" : "bg-blue-50 text-blue-700 hover:bg-blue-100"}
             onClick={() => setMealTime("dinner")}
           >
             저녁
