@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import type { MenuItem } from "@/lib/menus"
-import { PartyPopper, RefreshCcw } from 'lucide-react'
+import TopPopup from "@/components/top-popup"
+import { RefreshCcw } from 'lucide-react'
 
 type Props = {
   items?: MenuItem[]
@@ -26,6 +27,13 @@ export default function RouletteWheel({
   const [hasSpun, setHasSpun] = useState(false)
   const [durationMs, setDurationMs] = useState(3800)
   const wheelRef = useRef<HTMLDivElement>(null)
+
+  // Top popup
+  const [popupOpen, setPopupOpen] = useState(false)
+  const showPopup = (ms = 2200) => {
+    setPopupOpen(true)
+    window.setTimeout(() => setPopupOpen(false), ms)
+  }
 
   // Sounds
   const spinAudioRef = useRef<HTMLAudioElement | null>(null)
@@ -79,7 +87,6 @@ export default function RouletteWheel({
     setSpinning(true)
     setHasSpun(true)
 
-    // Align middle of target slice to pointer (top)
     const targetAngle = 360 * extraTurns + (360 - (target * anglePer + anglePer / 2))
     setRotation((prev) => prev + targetAngle)
 
@@ -110,6 +117,7 @@ export default function RouletteWheel({
         navigator.vibrate?.([60, 40, 60])
       } catch {}
       if (pickedIndex != null && slices[pickedIndex]) {
+        showPopup()
         onPick(slices[pickedIndex])
       }
     }
@@ -119,6 +127,8 @@ export default function RouletteWheel({
 
   return (
     <div className="flex flex-col items-center gap-4">
+      <TopPopup open={popupOpen} message="결과가 나왔어요! 아래 카드에서 확인하세요." />
+
       <div className="relative">
         {/* Pointer in sky-500 */}
         <div
@@ -142,9 +152,9 @@ export default function RouletteWheel({
           role="img"
           aria-label="메뉴 룰렛"
         >
-          {/* Center hub with the provided image (replaces paw) */}
+          {/* Center hub with the provided image */}
           <div className="absolute inset-0 grid place-items-center pointer-events-none">
-            <div className="w-16 h-16 rounded-full bg-white border-2 border-sky-200 shadow overflow-hidden grid place-items-center">
+            <div className="w-16 h-16 rounded-full bg-white border-2 border-sky-200 shadow overflow-hidden">
               <img
                 src="/images/center-gromit.png"
                 alt=""
@@ -164,13 +174,6 @@ export default function RouletteWheel({
         <RefreshCcw className={cn("h-5 w-5 mr-2", spinning ? "animate-spin" : "")} />
         {spinning ? "돌리는 중..." : "룰렛 돌리기"}
       </Button>
-
-      {!spinning && pickedIndex != null ? (
-        <div className="flex items-center gap-2 text-sky-700">
-          <PartyPopper className="h-5 w-5" />
-          <span className="font-semibold">결과 확인 아래에서!</span>
-        </div>
-      ) : null}
     </div>
   )
 }

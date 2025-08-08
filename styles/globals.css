@@ -1,8 +1,19 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
+/* Webfont: NanumSquare Bold (used globally) */
+@font-face {
+  font-family: "NanumSquare";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/NanumSquareB.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Dark variant helper (kept for compatibility) */
 @custom-variant dark (&:is(.dark *));
 
+/* Design tokens (kept in sync with app/globals.css) */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -10,7 +21,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.6 0.15 250); /* blue primary */
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -22,7 +33,7 @@
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.66 0.09 250); /* blue ring */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -74,6 +85,7 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
+/* Tailwind CSS variable mapping for shadcn/ui */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -113,11 +125,23 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Base layer */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "NanumSquare", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "Nanum Gothic", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
   }
+}
+
+/* Reusable sky-blue gingham background class (used by <body> in layout) */
+.app-gingham {
+  background-color: #eaf4ff; /* fallback tint */
+  background-image: url("/images/bg-gingham.png");
+  background-repeat: repeat;
+  background-size: 360px 360px; /* adjust tile size if desired */
+  background-attachment: fixed; /* subtle parallax */
 }

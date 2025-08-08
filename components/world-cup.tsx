@@ -5,6 +5,7 @@ import type { MenuItem } from "@/lib/menus"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ArrowLeftRight } from 'lucide-react'
+import TopPopup from "@/components/top-popup"
 
 type Props = {
   items?: MenuItem[]
@@ -45,6 +46,13 @@ export default function WorldCup({
   const [nextRound, setNextRound] = useState<MenuItem[]>([])
   const [idx, setIdx] = useState(0)
 
+  // popup
+  const [popupOpen, setPopupOpen] = useState(false)
+  const showPopup = (ms = 2200) => {
+    setPopupOpen(true)
+    window.setTimeout(() => setPopupOpen(false), ms)
+  }
+
   // sound feedback on select
   const selectAudioRef = useRef<HTMLAudioElement | null>(null)
   useEffect(() => {
@@ -66,11 +74,9 @@ export default function WorldCup({
   const roundName = total === 2 ? "결승" : total === 4 ? "4강" : total === 8 ? "8강" : `${total}강`
 
   const choose = (item: MenuItem) => {
-    // haptic
     try {
       navigator.vibrate?.(30)
     } catch {}
-    // sound
     try {
       selectAudioRef.current?.play().catch(() => {})
     } catch {}
@@ -79,6 +85,7 @@ export default function WorldCup({
     const nextIdx = idx + 2
     if (nextIdx >= total) {
       if (updated.length === 1) {
+        showPopup()
         onFinish(updated[0])
         return
       }
@@ -93,8 +100,10 @@ export default function WorldCup({
 
   return (
     <div className="w-full">
+      <TopPopup open={popupOpen} message="우승 메뉴가 결정됐어요!" />
+
       <div className="flex items-center justify-between mb-3">
-        <div className="text-sm text-rose-600 font-semibold">{roundName}</div>
+        <div className="text-sm text-sky-700 font-semibold">{roundName}</div>
         <div className="text-xs text-muted-foreground">남은 후보: {total}</div>
       </div>
 
@@ -109,7 +118,7 @@ export default function WorldCup({
               )}
               aria-label={`${m.name} 선택`}
             >
-              <div className="w-full aspect-square bg-rose-50">
+              <div className="w-full aspect-square bg-sky-50">
                 <img src={m.imageUrl || "/placeholder.svg"} alt={`${m.name} 사진`} className="w-full h-full object-cover" />
               </div>
               <div className="p-4 text-center">
@@ -130,7 +139,6 @@ export default function WorldCup({
           variant="secondary"
           className="rounded-full"
           onClick={() => {
-            // Reshuffle fresh each time
             setSeed((s) => s + 1)
             setRound(toEvenCount(shuffle(items), 8))
             setNextRound([])

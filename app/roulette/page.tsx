@@ -1,41 +1,41 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import BearAvatar from "@/components/bear-avatar"
 import RouletteWheel from "@/components/roulette-wheel"
 import { Button } from "@/components/ui/button"
-import { getMenuPool, type MealTime, type MenuItem } from "@/lib/menus"
+import { getAllMenus, type MenuItem } from "@/lib/menus"
 import { Undo2 } from 'lucide-react'
 
 export default function RoulettePage() {
-  const [mealTime, setMealTime] = useState<MealTime>("lunch")
   const [result, setResult] = useState<MenuItem | null>(null)
-  const pool = useMemo(() => getMenuPool(mealTime), [mealTime])
+  const pool = useMemo(() => getAllMenus(), [])
+  const resultRef = useRef<HTMLDivElement | null>(null)
+  const alertShownRef = useRef(false)
 
-  const startOver = () => setResult(null)
+  const startOver = () => {
+    setResult(null)
+    alertShownRef.current = false
+  }
+
+  useEffect(() => {
+    if (result && !alertShownRef.current) {
+      alertShownRef.current = true
+      // 1) Show alert
+      try {
+        window.alert(`결과가 나왔어요! "${result.name}"`)
+      } catch {}
+      // 2) Scroll to result card after 2s
+      const t = window.setTimeout(() => {
+        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }, 2000)
+      return () => window.clearTimeout(t)
+    }
+  }, [result])
 
   return (
     <main className="mx-auto max-w-md p-4">
-      <BearAvatar says="룰렛으로 골라볼까? 🐱🎡" className="mb-3" />
-
-      {/* Segmented buttons: 점심 / 저녁 */}
-      <div className="mb-4">
-        <div className="text-sm text-muted-foreground mb-2">식사 시간</div>
-        <div className="grid grid-cols-2 gap-2">
-          <Button
-            className={mealTime === "lunch" ? "bg-sky-500 text-white" : "bg-sky-50 text-sky-700 hover:bg-sky-100"}
-            onClick={() => setMealTime("lunch")}
-          >
-            점심
-          </Button>
-          <Button
-            className={mealTime === "dinner" ? "bg-blue-500 text-white" : "bg-blue-50 text-blue-700 hover:bg-blue-100"}
-            onClick={() => setMealTime("dinner")}
-          >
-            저녁
-          </Button>
-        </div>
-      </div>
+      <BearAvatar says="룰렛으로 골라볼까? 🐑🎡" className="mb-3" />
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
@@ -49,10 +49,10 @@ export default function RoulettePage() {
       </section>
 
       {result && (
-        <section className="mt-8">
+        <section ref={resultRef} className="mt-8">
           <div className="text-xl font-extrabold mb-3">오늘의 추천!</div>
           <div className="rounded-3xl overflow-hidden border shadow-sm bg-white">
-            <div className="w-full aspect-square bg-yellow-50">
+            <div className="w-full aspect-square bg-sky-50">
               <img
                 src={result.imageUrl || "/placeholder.svg"}
                 alt={`${result.name} 사진`}

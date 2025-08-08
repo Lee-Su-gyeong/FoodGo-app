@@ -26,6 +26,12 @@ export const lunchMenus: MenuItem[] = [
   { id: "katsucurry", name: "카레 가츠", imageUrl: "/images/foods/katsucurry.png" },
   { id: "salad", name: "샐러드", imageUrl: "/images/foods/salad.png" },
   { id: "burger", name: "버거", imageUrl: "/images/foods/burger.png" },
+
+  // New items
+  { id: "sandwich", name: "샌드위치", imageUrl: "/images/foods/sandwich.png" },
+  { id: "poke", name: "포케", imageUrl: "/images/foods/poke.png" },
+  { id: "jeyukbokkeum", name: "제육볶음", imageUrl: "/images/foods/jeyukbokkeum.png" },
+  { id: "taco", name: "타코", imageUrl: "/images/foods/taco.png" },
 ]
 
 // Dinner set
@@ -40,6 +46,14 @@ export const dinnerMenus: MenuItem[] = [
   { id: "jokbal", name: "족발", imageUrl: "/images/foods/jokbal.png" },
 ]
 
-export function getMenuPool(mealTime: MealTime): MenuItem[] {
-  return mealTime === "dinner" ? dinnerMenus : lunchMenus
+export function getMenuPool(_mealTime: MealTime): MenuItem[] {
+  // Backwards compatibility (no longer used for filtering)
+  return [...lunchMenus, ...dinnerMenus]
+}
+
+// All menus combined (no duplicates)
+export function getAllMenus(): MenuItem[] {
+  const map = new Map<string, MenuItem>()
+  ;[...lunchMenus, ...dinnerMenus].forEach((m) => map.set(m.id, m))
+  return Array.from(map.values())
 }
